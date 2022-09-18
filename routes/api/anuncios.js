@@ -3,35 +3,28 @@ const router = express.Router();
 const {query, validationResult } = require('express-validator');
 const Anuncio = require('../../models/Anuncio');
 
-// GET /api/agentes
-// Devuelve una lista de agentes
+// GET /api/anuncios
+// Devuelve una lista de anuncios
 router.get('/', async (req, res, next) => {
   try {
 
     // filtros
-    const name = req.query.name;
-    const age = req.query.age;
-    // paginación
-    const skip = req.query.skip;
-    const limit = req.query.limit;
-    // selección de campos
-    const fields = req.query.fields;
-    const sort = req.query.sort;
+    const {skip, limit, sort, fields, nombre, venta, tags, pmin, pmax} = req.query;
 
     // ejemplos de peticiones
-    // http://localhost:3000/api/anuncio/?skip=2&limit=2&fields=name%20-_id
-    // http://localhost:3000/api/anuncio/?sort=age%20-name
+    // http://localhost:3000/api/anuncios/?skip=2&limit=2&fields=name%20-_id
+    // http://localhost:3000/api/anuncios/?sort=age%20-name
+    // http://localhost:3000/api/anuncios?skip=0&limit=10&pmin=10&pmax=300
 
-    // creo el filtro vacio
     const filtro = {}
 
-    if (name) {
-      filtro.name = name;
-    }
+    if (nombre) filtro.nombre = nombre;
+    if (venta) filtro.venta = venta;
+    if (tags) filtro.tags = tags;
+    if(pmin && pmax) filtro.precio = { '$gte': pmin, '$lte': pmax };
+    if(pmin) filtro.precio = { '$gte': pmin};
+    if(pmax) filtro.precio = { '$lte': pmax};
 
-    if (age) {
-      filtro.age = age;
-    }
 
     const anuncios = await Anuncio.lista(filtro, skip, limit, fields, sort);
 
@@ -54,69 +47,62 @@ router.get('/en_query_string', [ // validaciones
   res.json({ result: true });
 });
 
-// GET /api/agentes/(_id)
-// Devuelve un agente
+// GET /api/anuncios/(_id)
+// Devuelve un anuncio
 router.get('/:id', async (req, res, next) => {
   try {
 
     const _id = req.params.id;
 
-    const agente = await Agente.lista({ _id: _id});
+    const anuncio = await Anuncio.lista({ _id: _id});
 
-    res.json({ result: agente });
+    res.json({ result: anuncio });
 
   } catch (error) {
     next(error);
   }
 });
 
-// PUT /api/agentes/(_id)  (body)
-// Actualizar un agente
+// PUT /api/anuncios/(_id)  (body)
+// Actualizar un anuncio
 router.put('/:id', async (req, res, next) => {
   try {
 
     const _id = req.params.id;
     const data = req.body;
 
-    const agenteActualizado = await Agente.findOneAndUpdate({ _id: _id }, data, {
-      new: true // esto hace que nos devuelva el documento actualizado
+    const anuncioActualizado = await Agente.findOneAndUpdate({ _id: _id }, data, {
+      new: true
     });
 
-    res.json({ result: agenteActualizado });
+    res.json({ result: anuncioActualizado });
 
   } catch (error) {
     next(error);
   }
 });
 
-// POST /api/agentes (body)
-// Crea un agente
+// POST /api/anuncio (body)
+// Crea un anuncio
 router.post('/', async (req, res, next) => {
   try {
-    const agenteData = req.body;
+    const anuncioData = req.body;
+    const anuncio = new Anuncio(anuncioData);
+    const anuncioGuardado = await anuncio.save();
 
-    // instanciamos objeto en memoria
-    const agente = new Agente(agenteData);
-
-    console.log(`La edad de ${agente.name} es par?:`, agente.edadEsPar());
-
-    // lo guardamos en la base de datos
-    const agenteGuardado = await agente.save();
-
-    res.json({ result: agenteGuardado });
+    res.json({ result: anuncioGuardado });
 
   } catch (error) {
     next(error);
   }
 });
 
-// DELETE /api/agentes/:_id
-// Eliminar un agente
+// DELETE /api/anuncio/:_id
+// Eliminar un anuncio
 router.delete('/:id', async (req, res, next) => {
   try {
     const _id = req.params.id;
-
-    await Agente.deleteOne({ _id: _id });
+    await Anuncio.deleteOne({ _id: _id });
 
     res.json();
 

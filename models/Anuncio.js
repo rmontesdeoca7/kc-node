@@ -14,6 +14,7 @@ anuncioSchema.statics.lista = function(filtro, skip, limit, fields, sort) {
   query.limit(limit);
   query.select(fields);
   query.sort(sort);
+  console.log('filtro', filtro);
   return query.exec();
 }
 
