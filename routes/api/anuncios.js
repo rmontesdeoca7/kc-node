@@ -17,7 +17,7 @@ router.get('/', async (req, res, next) => {
     const {skip, limit, sort, fields, nombre, venta, tags, pmin, pmax} = req.query;
     const filtro = {}
 
-    if (nombre) filtro.nombre = nombre;
+    if (nombre) filtro.nombre = { $regex: '^'+nombre, $options: 'i'};
     if (venta) filtro.venta = venta;
     if (tags) filtro.tags = tags;
     if(pmin && pmax) filtro.precio = { '$gte': pmin, '$lte': pmax };
