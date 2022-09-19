@@ -8,14 +8,13 @@ const Anuncio = require('../../models/Anuncio');
 router.get('/', async (req, res, next) => {
   try {
 
-    // filtros
-    const {skip, limit, sort, fields, nombre, venta, tags, pmin, pmax} = req.query;
-
     // ejemplos de peticiones
     // http://localhost:3000/api/anuncios/?skip=2&limit=2&fields=name%20-_id
     // http://localhost:3000/api/anuncios/?sort=age%20-name
     // http://localhost:3000/api/anuncios?skip=0&limit=10&pmin=10&pmax=300
 
+    // filtros
+    const {skip, limit, sort, fields, nombre, venta, tags, pmin, pmax} = req.query;
     const filtro = {}
 
     if (nombre) filtro.nombre = nombre;
@@ -25,9 +24,7 @@ router.get('/', async (req, res, next) => {
     if(pmin) filtro.precio = { '$gte': pmin};
     if(pmax) filtro.precio = { '$lte': pmax};
 
-
     const anuncios = await Anuncio.lista(filtro, skip, limit, fields, sort);
-
     res.json({ results: anuncios });
 
   } catch (err) {
@@ -35,17 +32,12 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/en_query_string', [ // validaciones
-  query('orderby').isAlphanumeric().withMessage('must be alphanumeric'),
-  query('solo').isNumeric().withMessage('must be numeric'),
-  // query('color').custom(color => { aqui validaría el color })
-], (req, res, next)=> {
-  validationResult(req).throw();
-  console.log(req.query);
-  const orderBy = req.query.orderby;
-  const numero = req.query.solo;
-  res.json({ result: true });
-});
+// TAGS
+router.get('/tags', (req, res,) => {
+  const tags = ['work', 'lifestyle', 'motor', 'mobile'];
+  res.json(tags);
+})
+
 
 // GET /api/anuncios/(_id)
 // Devuelve un anuncio

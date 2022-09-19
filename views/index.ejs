@@ -3,9 +3,36 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Bootsrapt -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <div class="container">
+      <h1 class="mb-4">Mi página de <%= title %></h1>
+      <div class="row mb-5">
+        <!-- ANUNCIOS -->
+        <% results.forEach(function(user){ %> 
+          <div class="col-3" >
+            <div class="card" style="width: 18rem;">
+              <img src="/images/<%= user.foto %>" alt="<%= user.nombre %>" class="card-img-top">
+              <div class="card-body">
+                <h3 class="card-title"><%= user.nombre %> </h3>
+                <h6>$ <%= user.precio %> </h6>
+                <% if (user.venta) { %>
+                  <h6 class="float-end">Se vende</h6>
+                <% } else { %>
+                  <h6 class="float-end">Se busca</h6>
+                <% } %>
+
+                <!-- TAGS -->
+                <% user.tags.forEach(function(tag){ %>
+                  <span class="badge text-bg-primary"> <%= tag %> </span>
+                <% }); %>   
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>    
   </body>
 </html>
