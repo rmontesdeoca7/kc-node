@@ -58,3 +58,17 @@ Ejemplos ipos de filtros Permitidos
   tags,
   venta = si esta en venta o no
 ```
+
+### GET /api/tags/
+
+Ejemplo de la petición a tags
+
+{
+  "results": [
+    "work",
+    "lifestyle",
+    "motor",
+    "mobile"
+  ]
+}
+```

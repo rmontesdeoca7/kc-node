@@ -35,7 +35,7 @@ router.get('/', async (req, res, next) => {
 // TAGS
 router.get('/tags', (req, res,) => {
   const tags = ['work', 'lifestyle', 'motor', 'mobile'];
-  res.json(tags);
+  res.json({results: tags});
 })
 
 
